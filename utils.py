@@ -17,6 +17,12 @@ def load_data(path):
 def get_weights_path():
     return CONFIG.GENERAL.weights_path.replace('{model}', CONFIG.MODEL.model_name)
 
+def get_confusion_matrix_path(model_number):
+    return CONFIG.GENERAL.confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{model_number}', str(model_number))
+
+def get_normalized_confusion_matrix_path(model_number):
+    return CONFIG.GENERAL.normalized_confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{model_number}', str(model_number))
+
 def train(model, X_train, y_train):
     model.fit(X_train, y_train)
     return model

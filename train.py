@@ -5,9 +5,11 @@ import imblearn.over_sampling as ups
 import joblib
 
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
+from plotter import save_df_as_image
 from config import CONFIG
-from utils import load_data, get_weights_path, train, inference
+from utils import *
 
 def save_data(X, y, columns, path):
     df_result = pd.DataFrame(X, columns=columns)
@@ -48,9 +50,23 @@ def measure_accuracy(y_pred, y_test, values):
 
     return (y_test == y_pred).mean()
 
+def save_confusion_matrix(result_np, values, path):
+    result_df = pd.DataFrame(result_np, columns=values)
+    result_df.insert(0, "True class", values)
+    result_df = result_df.set_index("True class")
+    save_df_as_image(result_df, path)
+
+def get_confusion_matrices(y_pred, y_test, values, model_number):
+    num_classes = values.shape[0]
+    result_np = confusion_matrix(y_pred, y_test, labels=np.arange(0, num_classes, 1))
+    result_np_norm = confusion_matrix(y_pred, y_test, labels=np.arange(0, num_classes, 1), normalize='pred')
+    save_confusion_matrix(result_np, values, get_confusion_matrix_path(model_number))
+    save_confusion_matrix(result_np_norm, values, get_normalized_confusion_matrix_path(model_number))
+
 def calculate_and_print_metrics(y_pred, y_test, values, model_number):
     print(f'Accuracies of model number {model_number}:')
     print(f'Overall accuracy of model number {model_number}:', measure_accuracy(y_pred, y_test, values), '\n')
+    get_confusion_matrices(y_pred, y_test, values, model_number)
 
 def prepare_data():
     X, y, columns, values = load_data(CONFIG.GENERAL.full_data_path)
