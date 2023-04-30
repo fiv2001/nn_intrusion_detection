@@ -1,9 +1,9 @@
-import lightgbm as lgb
 import numpy as np
 import joblib
 
+import utils
+
 from config import CONFIG
-from utils import load_data, get_weights_path, inference
 
 def load_model(path):
     model = joblib.load(path)
@@ -20,10 +20,10 @@ def save_result(result):
             f.write(value + '\n')
     print(f'Result saved to {result_path}')
 
-def infer():
-    model = load_model(get_weights_path())
-    X_test, _, _, _ = load_data(CONFIG.GENERAL.test_data_path)
-    result = get_labels_from_indexes(inference(model, X_test))
+def inference():
+    model = load_model(utils.get_weights_path())
+    X_test, _, _, _ = utils.load_data(CONFIG.GENERAL.test_data_path)
+    result = get_labels_from_indexes(model.predict(X_test))
     save_result(result)
 
-infer()
+inference()

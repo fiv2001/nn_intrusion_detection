@@ -10,12 +10,13 @@ class CONFIG:
         weights_path = 'results/{model}_weights.pkl'
         basic_model_number = 1
         upsampled_model_number = 2
-        confusion_matrix_path = 'results/{model}_confusion_matrix_{model_number}.jpg'
-        normalized_confusion_matrix_path = 'results/{model}_confusion_matrix_normalized_{model_number}.jpg'
+        confusion_matrix_path = 'results/{model}_{upsampling}_confusion_matrix.jpg'
+        normalized_confusion_matrix_path = 'results/{model}_{upsampling}_confusion_matrix_normalized_{model_number}.jpg'
     class UPSAMPLING:
+        upsampling_name = "smote"
         min_samples_per_class = 100000
         load_upsampled = True
-        upsampled_data_path = "data/smoted.csv"
+        upsampled_data_path = "data/{upsampling}.csv"
     class MODEL:
         model_name = 'lgbm'
         class LGBM:

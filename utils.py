@@ -17,15 +17,14 @@ def load_data(path):
 def get_weights_path():
     return CONFIG.GENERAL.weights_path.replace('{model}', CONFIG.MODEL.model_name)
 
+def get_upsampling_name(model_number):
+    return CONFIG.UPSAMPLING.upsampling_name if model_number == CONFIG.GENERAL.upsampled_model_number else ""
+
+def get_upsampled_data_path():
+    return CONFIG.UPSAMPLING.upsampled_data_path.replace("{upsampling}", CONFIG.UPSAMPLING.upsampling_name)
+
 def get_confusion_matrix_path(model_number):
-    return CONFIG.GENERAL.confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{model_number}', str(model_number))
+    return CONFIG.GENERAL.confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{upsampling}', get_upsampling_name(model_number))
 
 def get_normalized_confusion_matrix_path(model_number):
-    return CONFIG.GENERAL.normalized_confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{model_number}', str(model_number))
-
-def train(model, X_train, y_train):
-    model.fit(X_train, y_train)
-    return model
-
-def inference(model, X_test):
-    return model.predict(X_test)
+    return CONFIG.GENERAL.normalized_confusion_matrix_path.replace('{model}', CONFIG.MODEL.model_name).replace('{upsampling}', get_upsampling_name(model_number))
