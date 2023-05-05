@@ -13,3 +13,4 @@ class Smote(BaseUpsampling):
 
     def fit_resample(self, X, y):
         return self.upsampling.fit_resample(X, y)
+

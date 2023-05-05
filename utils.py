@@ -3,6 +3,7 @@ from config import CONFIG
 import numpy as np
 import pandas as pd
 
+
 def load_data(path):
     df_full = pd.read_csv(path).fillna(0).replace(np.inf, 1e18).replace(-np.inf, -1e18)
     values, unique = [], []
@@ -15,7 +16,7 @@ def load_data(path):
     return df_numpy, values, df_full.columns, unique
 
 def get_weights_path():
-    return CONFIG.GENERAL.weights_path.replace('{model}', CONFIG.MODEL.model_name)
+    return CONFIG.GENERAL.weights_path.replace('{model}', CONFIG.MODEL.model_name).replace('{upsampling}', CONFIG.UPSAMPLING.upsampling_name)
 
 def get_upsampling_name(model_number):
     return CONFIG.UPSAMPLING.upsampling_name if model_number == CONFIG.GENERAL.upsampled_model_number else ""

@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import lightgbm as lgb
 import imblearn.over_sampling as ups
-import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -14,6 +13,7 @@ import upsampling
 from plotter import save_df_as_image
 from config import CONFIG
 
+
 def save_data(X, y, columns, path):
     df_result = pd.DataFrame(X, columns=columns)
     df_result[CONFIG.GENERAL.target_column] = y
@@ -22,13 +22,6 @@ def save_data(X, y, columns, path):
 def save_values(values, path):
     np.save(path, values)
     print('Values saved.')
-
-def create_model():
-    match CONFIG.MODEL.model_name:
-        case "lgbm":
-            return models.LGBMModel(num_leaves=CONFIG.MODEL.LGBM.num_leaves, n_estimators=CONFIG.MODEL.LGBM.num_trees)
-        case _:
-            raise ValueError("Unsupported model name")
 
 def create_upsampling(sampling_strategy):
     match CONFIG.UPSAMPLING.upsampling_name:
@@ -43,7 +36,7 @@ def upsample(X, y, columns):
         values = df_train[CONFIG.GENERAL.target_column]
         df_train = df_train.drop(CONFIG.GENERAL.target_column, axis=1).to_numpy()
         print('Upsampling loaded')
-        return df_train, values
+        return df_train, values.to_numpy()
 
     unique, counts = np.unique(y, return_counts=True)
     sizes_dict = {}
@@ -54,7 +47,6 @@ def upsample(X, y, columns):
     save_data(X_smoted, y_smoted, columns, utils.get_upsampled_data_path())
     print('Upsampling successful')
     return X_smoted, y_smoted
-
 
 def measure_accuracy(y_pred, y_test, values):
     unique = np.unique(y_test)
@@ -85,13 +77,13 @@ def calculate_and_print_metrics(y_pred, y_test, values, model_number):
 
 def prepare_data():
     X, y, columns, values = utils.load_data(CONFIG.GENERAL.full_data_path)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=CONFIG.GENERAL.test_size, random_state=CONFIG.GENERAL.random_state)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=CONFIG.GENERAL.test_size, random_state=CONFIG.GENERAL.random_state, shuffle=CONFIG.GENERAL.shuffle)
     X_train_upsampled, y_train_upsampled = upsample(X_train, y_train, columns)
     save_values(values, CONFIG.GENERAL.values_path)
     return X_train, X_test, X_train_upsampled, y_train, y_test, y_train_upsampled, values
 
 def train_model_and_print_metrics(X_train, X_test, y_train, y_test, values, model_number):
-    model = create_model()
+    model = models.create_model()
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     calculate_and_print_metrics(y_pred, y_test, values, model_number)
@@ -99,7 +91,7 @@ def train_model_and_print_metrics(X_train, X_test, y_train, y_test, values, mode
 
 def save_model(model):
     path = utils.get_weights_path()
-    joblib.dump(model, path)
+    model.save(path)
     print('Model saved')
 
 def main():

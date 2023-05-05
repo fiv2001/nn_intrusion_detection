@@ -1,12 +1,14 @@
 import numpy as np
-import joblib
 
 import utils
+import models
 
 from config import CONFIG
 
+
 def load_model(path):
-    model = joblib.load(path)
+    model = models.create_model()
+    model.load(path)
     return model
 
 def get_labels_from_indexes(indexes):
