@@ -109,8 +109,6 @@ class PytorchModel(BaseModel):
             print(f"Epoch: {epoch}")
             for batch_idx in range((X_train.shape[0] + self.batch_size - 1) // self.batch_size):
                 X_batch, y_batch = self.get_batch(X_train, batch_idx).float(), self.get_batch(y_train, batch_idx).long()
-#                if batch_idx == 1500:
-#                    print(X_batch)
                 X_batch = X_batch.to(self.device)
                 y_batch = y_batch.to(self.device)
                 y_pred = self.model(X_batch)
@@ -125,8 +123,6 @@ class PytorchModel(BaseModel):
                     losses.append(loss.item())
 
                 pred_classes = torch.argmax(nn.LogSoftmax(dim=1)(y_pred.detach().cpu()), dim=1)
-#                if (batch_idx == 1500):
-#                    print(pred_classes)
                 result.append(pred_classes.numpy())
                 accuracy = (pred_classes == y_batch.detach().cpu()).float().mean()
                 accuracies.append(accuracy)
@@ -145,13 +141,9 @@ class PytorchModel(BaseModel):
             result = []
             for batch_idx in range((X_test.shape[0] + self.batch_size - 1) // self.batch_size):
                 X_batch = self.get_batch(X_test, batch_idx).float()
-#                if batch_idx == 1500:
-#                    print(X_batch)
                 X_batch = X_batch.to(self.device)
                 y_pred = self.model(X_batch)
                 pred_classes = torch.argmax(nn.LogSoftmax(dim=1)(y_pred.detach().cpu()), dim=1)
-#                if (batch_idx == 1500):
-#                    print(pred_classes)
                 result.append(pred_classes.numpy())
             return np.concatenate(result, axis=None)
 
@@ -176,7 +168,6 @@ class RecurrentModule(nn.Module):
     def forward(self, x):
         x, _ = self.recurrent(x)
         x = self.linear(x.flatten(start_dim=1))
-        #x = nn.Softmax(dim=0)(x)
         return x
 
 
