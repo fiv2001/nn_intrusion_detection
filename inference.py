@@ -24,7 +24,7 @@ def save_result(result):
 
 def inference():
     model = load_model(utils.get_weights_path())
-    X_test, _, _, _ = utils.load_data(CONFIG.GENERAL.test_data_path)
+    X_test, _, _, _ = utils.load_data(CONFIG.GENERAL.test_data_path, is_train=False)
     result = get_labels_from_indexes(model.predict(X_test))
     save_result(result)
 
