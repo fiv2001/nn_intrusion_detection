@@ -23,13 +23,13 @@ def run_train():
 def run_all_trains():
     normal_models = ["lgbm", "perceptron"]
     recurrent_models = ["rnn", "gru", "lstm"]
-    upsamplings = ["none", "random", "smote", "borderline_smote", "svm_smote", "kmeans_smote", "adasyn"]
+    upsamplings = ["none", "random", "smote", "borderline_smote", "adasyn"]
 
     cur_upsampling = "none"
     cur_model = "lgbm"
 
-    for upsampling in ["adasyn"]:
-        change_config("load_upsampled", True, False)
+    for upsampling in upsamplings:
+        #change_config("load_upsampled", True, False)
         change_config("upsampling_name", cur_upsampling, upsampling)
         cur_upsampling = upsampling
         for model in normal_models:
@@ -37,11 +37,11 @@ def run_all_trains():
             cur_model = model
             run_train()
             print(f"Successfully trained model {model} with upsampling {upsampling}")
-            change_config("load_upsampled", False, True)
+            #change_config("load_upsampled", False, True)
 
     change_config("lookback", 0, 2)
-    for upsampling in ["none", "random", "smote", "borderline_smote", "adasyn"]:
-        change_config("load_upsampled", True, False)
+    for upsampling in upsamplings:
+        #change_config("load_upsampled", True, False)
         change_config("upsampling_name", cur_upsampling, upsampling)
         cur_upsampling = upsampling
         for model in recurrent_models:
@@ -49,6 +49,6 @@ def run_all_trains():
             cur_model = model
             run_train()
             print(f"Successfully trained model {model} with upsampling {upsampling}")
-            change_config("load_upsampled", False, True)
+            #change_config("load_upsampled", False, True)
 
 run_all_trains()

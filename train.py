@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
@@ -82,8 +83,8 @@ def prepare_data():
 def train_model_and_print_metrics(X_train, X_test, y_train, y_test, values, model_number):
     model = models.create_model()
     model.fit(X_train, y_train)
-    y_pred = model.predict(X_train)
-    calculate_and_print_metrics(y_pred, y_train, values, model_number)
+    y_pred = model.predict(X_test)
+    calculate_and_print_metrics(y_pred, y_test, values, model_number)
     return model
 
 def save_model(model):

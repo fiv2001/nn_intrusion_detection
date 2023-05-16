@@ -16,15 +16,15 @@ class CONFIG:
         lookback = 2
         train_model_without_upsampling = False
     class UPSAMPLING:
-        upsampling_name = "none" # options: "none", "random", "smote", "borderline_smote", "svm_smote", "kmeans_smote", "adasyn"
+        upsampling_name = "adasyn" # options: "none", "random", "smote", "borderline_smote", "svm_smote", "kmeans_smote", "adasyn"
         min_samples_per_class = 100000
-        min_samples_to_upsample = 0
+        min_samples_to_upsample = 50
         load_upsampled = True
         upsampled_data_path = "data/{upsampling}_lookback={lookback}.csv"
         kmeans_cluster_balance_threshold = 3
         kmeans_n_init = 1
     class MODEL:
-        model_name = "gru" # options: "lgbm", "perceptron", "rnn", "gru", "lstm"
+        model_name = "lstm" # options: "lgbm", "perceptron", "rnn", "gru", "lstm"
         class LGBM:
             num_leaves = 15
             num_trees = 10
